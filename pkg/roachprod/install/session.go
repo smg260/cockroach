@@ -12,12 +12,14 @@ package install
 
 import (
 	"context"
+	"github.com/cockroachdb/cockroach/pkg/util/retry"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/cockroachdb/cockroach/pkg/roachprod/config"
 	"github.com/cockroachdb/errors"
@@ -41,12 +43,30 @@ type session interface {
 
 type remoteSession struct {
 	*exec.Cmd
-	cancel         func()
-	logfile        string // captures ssh -vvv
-	withExitStatus bool
+	cancel          func()
+	logfile         string // captures ssh -vvv
+	withExitStatus  bool
+	withSSH255Retry bool
 }
 
-func newRemoteSession(user, host string, logdir string) (*remoteSession, error) {
+var sshError255RetryOptions = retry.Options{
+	InitialBackoff: 5 * time.Second,
+	Multiplier:     2,
+	MaxBackoff:     1 * time.Minute,
+	MaxRetries:     3,
+}
+
+func (s *remoteSession) retryWithBackoff(ctx context.Context, f func() error) error {
+	if s.withSSH255Retry {
+		return sshError255RetryOptions.Do(ctx, func(ctx context.Context) error {
+			return f()
+		})
+	}
+
+	return nil
+}
+
+func newRemoteSession(user, host string, logdir string, retrySSH255 bool) (*remoteSession, error) {
 	// TODO(tbg): this is disabled at the time of writing. It was difficult
 	// to assign the logfiles to the roachtest and as a bonus our CI harness
 	// never actually managed to collect the files since they had wrong
@@ -77,11 +97,12 @@ func newRemoteSession(user, host string, logdir string) (*remoteSession, error) 
 		// Timeout long connections so failure information is not lost by the roachtest
 		// context cancellation killing hanging roachprod processes.
 		"-o", "ConnectTimeout=5",
+		"-o", "ConnectionAttempts=3",
 	}
 	args = append(args, sshAuthArgs()...)
 	ctx, cancel := context.WithCancel(context.Background())
 	cmd := exec.CommandContext(ctx, "ssh", args...)
-	return &remoteSession{cmd, cancel, logfile, withExitStatus}, nil
+	return &remoteSession{cmd, cancel, logfile, withExitStatus, retrySSH255}, nil
 }
 
 func (s *remoteSession) errWithDebug(err error) error {
@@ -134,7 +155,10 @@ func (s *remoteSession) Run(ctx context.Context, cmd string) error {
 	var err error
 	commandFinished := make(chan struct{})
 	go func() {
-		err = s.errWithDebug(s.Cmd.Run())
+		r := s.retryWithBackoff(ctx, func(ctx context.Context) error {
+			return s.Cmd.Run()
+		})
+		err = s.errWithDebug(r)
 		close(commandFinished)
 	}()
 

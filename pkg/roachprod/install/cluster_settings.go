@@ -23,6 +23,11 @@ type ClusterSettings struct {
 	NumRacks      int
 	// DebugDir is used to stash debug information.
 	DebugDir string
+
+	// SshErrorRetries will direct roachprod to retry the ssh command being
+	// executed up to 3 times using exponential backoff
+	// TODO: make configurable
+	RetrySsh255Errors bool
 }
 
 // ClusterSettingOption is the interface satisfied by options to MakeClusterSettings.
@@ -92,16 +97,23 @@ func (o DebugDirOption) apply(settings *ClusterSettings) {
 	settings.DebugDir = string(o)
 }
 
+type RetrySsh255ErrorsOption bool
+
+func (o RetrySsh255ErrorsOption) apply(settings *ClusterSettings) {
+	settings.RetrySsh255Errors = bool(o)
+}
+
 // MakeClusterSettings makes a ClusterSettings.
 func MakeClusterSettings(opts ...ClusterSettingOption) ClusterSettings {
 	clusterSettings := ClusterSettings{
-		Binary:        config.Binary,
-		Tag:           "",
-		PGUrlCertsDir: "./certs",
-		Secure:        false,
-		UseTreeDist:   true,
-		Env:           config.DefaultEnvVars(),
-		NumRacks:      0,
+		Binary:            config.Binary,
+		Tag:               "",
+		PGUrlCertsDir:     "./certs",
+		Secure:            false,
+		UseTreeDist:       true,
+		Env:               config.DefaultEnvVars(),
+		NumRacks:          0,
+		RetrySsh255Errors: false,
 	}
 	// Override default values using the passed options (if any).
 	for _, opt := range opts {

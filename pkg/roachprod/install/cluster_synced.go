@@ -729,6 +729,7 @@ func (c *SyncedCluster) Run(
 			return nil, nil
 		}
 
+		//TODO: add retry here
 		out, err := sess.CombinedOutput(ctx, nodeCmd)
 		msg := strings.TrimSpace(string(out))
 		if err != nil {

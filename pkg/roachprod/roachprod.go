@@ -359,13 +359,14 @@ func Run(
 	l *logger.Logger,
 	clusterName, SSHOptions, processTag string,
 	secure bool,
+	ssh255Retries bool,
 	stdout, stderr io.Writer,
 	cmdArray []string,
 ) error {
 	if err := LoadClusters(); err != nil {
 		return err
 	}
-	c, err := newCluster(l, clusterName, install.SecureOption(secure), install.TagOption(processTag))
+	c, err := newCluster(l, clusterName, install.SecureOption(secure), install.TagOption(processTag), install.RetrySsh255ErrorsOption(ssh255Retries))
 	if err != nil {
 		return err
 	}
@@ -390,6 +391,7 @@ func RunWithDetails(
 	l *logger.Logger,
 	clusterName, SSHOptions, processTag string,
 	secure bool,
+	ssh255Retries bool,
 	cmdArray []string,
 ) ([]install.RunResultDetails, error) {
 	if err := LoadClusters(); err != nil {

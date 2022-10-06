@@ -14,6 +14,7 @@ import "github.com/cockroachdb/cockroach/pkg/cmd/roachtest/registry"
 
 // RegisterTests registers all tests to the Registry. This powers `roachtest run`.
 func RegisterTests(r registry.Registry) {
+	registerDummy(r)
 	registerAWSDMS(r)
 	registerAcceptance(r)
 	registerActiveRecord(r)

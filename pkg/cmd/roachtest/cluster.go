@@ -283,7 +283,7 @@ type cmdRes struct {
 // Note that the output is truncated; only a tail is returned.
 // Also note that if the command exits with an error code, its output is also
 // included in cmdRes.err.
-func execCmdEx(ctx context.Context, l *logger.Logger, clusterName string, args ...string) cmdRes {
+func execCmdEx(ctx context.Context, l *logger.Logger, clusterName string, ssh255Retries bool, args ...string) cmdRes {
 	var cancel func()
 	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
@@ -380,7 +380,7 @@ func execCmdEx(ctx context.Context, l *logger.Logger, clusterName string, args .
 		}
 	}
 
-	err := roachprod.Run(ctx, l, clusterName, "" /* SSHOptions */, "" /* processTag */, false /* secure */, roachprodRunStdout, roachprodRunStderr, args)
+	err := roachprod.Run(ctx, l, clusterName, "" /* SSHOptions */, "" /* processTag */, false /* secure */, ssh255Retries, roachprodRunStdout, roachprodRunStderr, args)
 	closePipes(ctx)
 	wg.Wait()
 
@@ -889,6 +889,8 @@ func (f *clusterFactory) newCluster(
 
 	// Attempt to create a cluster several times to be able to move past
 	// temporary flakiness in the cloud providers.
+
+	//TODO: maybe use retry lib here for backoff
 	maxAttempts := 3
 	if cfg.nameOverride != "" {
 		// Usually when retrying we pick a new name (to avoid repeat failures due to
