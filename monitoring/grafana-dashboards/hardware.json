@@ -78,7 +78,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sys_cpu_combined_percent_normalized{job='cockroachdb',cluster=~\"$cluster\",instance=~\"$node\"}",
+          "expr": "sys_cpu_combined_percent_normalized{job='cockroachdb',test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{instance}}",
@@ -170,7 +170,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sys_rss{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}",
+          "expr": "sys_rss{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}",
           "hide": false,
           "interval": "",
           "legendFormat": "{{instance}}",
@@ -271,7 +271,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "rate(sys_host_disk_read_bytes{job=\"cockroachdb\",instance=~\"$node\",cluster=~\"$cluster\"}[$__rate_interval])",
+          "expr": "rate(sys_host_disk_read_bytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -359,7 +359,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(sys_host_disk_write_bytes{job=\"cockroachdb\",instance=~\"$node\",cluster=~\"$cluster\"}[$__rate_interval])",
+          "expr": "rate(sys_host_disk_write_bytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -449,7 +449,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "rate(sys_host_disk_read_count{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval])",
+          "expr": "rate(sys_host_disk_read_count{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -540,7 +540,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "rate(sys_host_disk_write_count{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval])",
+          "expr": "rate(sys_host_disk_write_count{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -630,7 +630,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "rate(sys_host_disk_iopsinprogress{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval])",
+          "expr": "rate(sys_host_disk_iopsinprogress{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -720,7 +720,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "capacity_available{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}",
+          "expr": "capacity_available{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{instance}}",
@@ -810,7 +810,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "rate(sys_host_net_recv_bytes{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval])",
+          "expr": "rate(sys_host_net_recv_bytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -900,7 +900,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "rate(sys_host_net_send_bytes{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval])",
+          "expr": "rate(sys_host_net_send_bytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval])",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -944,7 +944,9 @@
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "crdb-console-run-name"
+  ],
   "templating": {
     "list": [
       {
@@ -967,27 +969,55 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "drew-demo",
-          "value": "drew-demo"
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "sys_uptime{job=\"cockroachdb\"}",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
         "hide": 0,
-        "includeAll": false,
-        "label": "Cluster",
+        "includeAll": true,
+        "label": "Test Run ID",
         "multi": false,
-        "name": "cluster",
+        "name": "test_run_id",
         "options": [],
         "query": {
-          "query": "sys_uptime{job=\"cockroachdb\"}",
-          "refId": "Prometheusa-cluster-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "regex": "/cluster=\"([^\"]+)\"/",
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Test",
+        "multi": false,
+        "name": "test_name",
+        "options": [],
+        "query": {
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
@@ -1006,7 +1036,7 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Node",
@@ -1014,13 +1044,13 @@
         "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
-          "refId": "Prometheusa-node-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 3,
+        "sort": 1,
         "tagValuesQuery": "",
         "tagsQuery": "",
         "type": "query",
@@ -1086,6 +1116,7 @@
           }
         ],
         "query": "30s,1m,5m,10m,30m,1h,6h,12h,1d",
+        "queryValue": "",
         "refresh": 2,
         "skipUrlSync": false,
         "type": "interval"
@@ -1093,7 +1124,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},

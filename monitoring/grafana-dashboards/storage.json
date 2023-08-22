@@ -79,7 +79,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(sum(capacity{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(capacity{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "Max",
@@ -90,7 +90,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": " sum(sum(capacity_available{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": " sum(sum(capacity_available{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "legendFormat": "Available",
           "refId": "C"
@@ -100,7 +100,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(sum(capacity{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance)) - sum(sum(capacity_available{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(capacity{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance)) - sum(sum(capacity_available{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "Used",
@@ -191,7 +191,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(sum(livebytes{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(livebytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "Live",
@@ -202,7 +202,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(sum(sysbytes{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(sysbytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "System",
@@ -293,7 +293,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99,rate(raft_process_logcommit_latency_bucket{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}[$__rate_interval]))",
+          "expr": "histogram_quantile(0.99,rate(raft_process_logcommit_latency_bucket{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval]))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -384,7 +384,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50,rate(raft_process_logcommit_latency_bucket{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}[$__rate_interval]))",
+          "expr": "histogram_quantile(0.50,rate(raft_process_logcommit_latency_bucket{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval]))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -475,7 +475,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.99,rate(raft_process_commandcommit_latency_bucket{job=\"cockroachdb\", instance=~\"$node\", cluster=~\"$cluster\"}[$__rate_interval]))",
+          "expr": "histogram_quantile(0.99,rate(raft_process_commandcommit_latency_bucket{job=\"cockroachdb\", instance=~\"$node\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"}[$__rate_interval]))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -566,7 +566,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "histogram_quantile(0.50,rate(raft_process_commandcommit_latency_bucket{job=\"cockroachdb\", instance=~\"$node\", cluster=~\"$cluster\"}[$__rate_interval]))",
+          "expr": "histogram_quantile(0.50,rate(raft_process_commandcommit_latency_bucket{job=\"cockroachdb\", instance=~\"$node\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "{{instance}}",
           "refId": "A"
@@ -656,7 +656,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "avg(avg(rocksdb_read_amplification{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "avg(avg(rocksdb_read_amplification{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "legendFormat": "Read Amplification",
           "refId": "A"
@@ -746,7 +746,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rocksdb_num_sstables{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"})",
+          "expr": "sum(rocksdb_num_sstables{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"})",
           "interval": "",
           "legendFormat": "SSTables",
           "refId": "A"
@@ -836,7 +836,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(sum(sys_fd_open{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(sys_fd_open{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "Open",
@@ -847,7 +847,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(sum(sys_fd_softlimit{job=\"cockroachdb\",cluster=\"$cluster\",instance=~\"$node\"}) by (instance))",
+          "expr": "sum(sum(sys_fd_softlimit{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}) by (instance))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "Limit",
@@ -937,7 +937,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(rocksdb_compactions{job=\"cockroachdb\",cluster=\"$cluster\"}[$__rate_interval]))",
+          "expr": "sum(rate(rocksdb_compactions{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Compactions",
           "refId": "A"
@@ -947,7 +947,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(rate(rocksdb_flushes{job=\"cockroachdb\",cluster=\"$cluster\"}[$__rate_interval]))",
+          "expr": "sum(rate(rocksdb_flushes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Flushes",
           "refId": "B"
@@ -1038,7 +1038,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rate(timeseries_write_samples{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(timeseries_write_samples{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Samples Written",
           "refId": "A"
@@ -1049,7 +1049,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rate(timeseries_write_errors{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(timeseries_write_errors{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Errors",
           "refId": "B"
@@ -1140,7 +1140,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(rate(timeseries_write_bytes{job=\"cockroachdb\",cluster=~\"$cluster\",instance=~\"$node\"}[$__rate_interval]))",
+          "expr": "sum(rate(timeseries_write_bytes{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\",instance=~\"$node\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Bytes Written",
           "refId": "A"
@@ -1185,7 +1185,9 @@
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "crdb-console-run-name"
+  ],
   "templating": {
     "list": [
       {
@@ -1208,27 +1210,55 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "drew-demo",
-          "value": "drew-demo"
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "sys_uptime{job=\"cockroachdb\"}",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
         "hide": 0,
-        "includeAll": false,
-        "label": "Cluster",
+        "includeAll": true,
+        "label": "Test Run ID",
         "multi": false,
-        "name": "cluster",
+        "name": "test_run_id",
         "options": [],
         "query": {
-          "query": "sys_uptime{job=\"cockroachdb\"}",
-          "refId": "Prometheus-cluster-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
+          "refId": "StandardVariableQuery"
         },
-        "refresh": 1,
-        "regex": "/cluster=\"([^\"]+)\"/",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Test",
+        "multi": false,
+        "name": "test_name",
+        "options": [],
+        "query": {
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
@@ -1247,7 +1277,7 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Node",
@@ -1255,8 +1285,8 @@
         "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
-          "refId": "Prometheus-node-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -1335,7 +1365,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},

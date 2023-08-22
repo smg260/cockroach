@@ -78,7 +78,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(requests_slow_raft{job=\"cockroachdb\",cluster=\"$cluster\"})",
+          "expr": "sum(requests_slow_raft{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"})",
           "interval": "",
           "legendFormat": "Slow Raft Proposals",
           "refId": "A"
@@ -169,7 +169,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(requests_slow_distsender{job=\"cockroachdb\",cluster=\"$cluster\"})",
+          "expr": "sum(requests_slow_distsender{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"})",
           "interval": "",
           "legendFormat": "Slow DistSender RPCs",
           "queryType": "randomWalk",
@@ -260,7 +260,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(requests_slow_lease{job=\"cockroachdb\",cluster=\"$cluster\"})",
+          "expr": "sum(requests_slow_lease{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"})",
           "interval": "",
           "legendFormat": "Slow Lease Acquisitions",
           "refId": "A"
@@ -350,7 +350,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "exemplar": true,
-          "expr": "sum(requests_slow_latch{job=\"cockroachdb\",cluster=\"$cluster\"})",
+          "expr": "sum(requests_slow_latch{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"})",
           "interval": "",
           "legendFormat": "Slow Latch Acquisitions",
           "refId": "A"
@@ -395,7 +395,9 @@
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "crdb-console-run-name"
+  ],
   "templating": {
     "list": [
       {
@@ -418,36 +420,33 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "drew-demo",
-          "value": "drew-demo"
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "sys_uptime{job=\"cockroachdb\"}",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
         "hide": 0,
-        "includeAll": false,
-        "label": "cluster",
+        "includeAll": true,
+        "label": "Test Run ID",
         "multi": false,
-        "name": "cluster",
+        "name": "test_run_id",
         "options": [],
         "query": {
-          "query": "sys_uptime{job=\"cockroachdb\"}",
-          "refId": "Prometheus-cluster-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\"},test_run_id)",
+          "refId": "StandardVariableQuery"
         },
-        "refresh": 1,
-        "regex": "/cluster=\"([^\"]+)\"/",
+        "refresh": 2,
+        "regex": "",
         "skipUrlSync": false,
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "sort": 5,
+        "type": "query"
       },
       {
-        "allValue": ".*",
+        "allValue": "",
         "current": {
           "selected": false,
           "text": "All",
@@ -457,7 +456,38 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Test",
+        "multi": false,
+        "name": "test_name",
+        "options": [],
+        "query": {
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\"},test_name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Node",
@@ -465,13 +495,13 @@
         "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(sys_uptime{job=\"cockroachdb\",cluster=\"$cluster\"},instance)",
-          "refId": "Prometheus-node-Variable-Query"
+          "query": "label_values(sys_uptime{job=\"cockroachdb\",test_run_id=~\"$test_run_id\", test_name=~\"$test_name\"},instance)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 3,
+        "sort": 1,
         "tagValuesQuery": "",
         "tagsQuery": "",
         "type": "query",
@@ -537,6 +567,7 @@
           }
         ],
         "query": "30s,1m,5m,10m,30m,1h,6h,12h,1d",
+        "queryValue": "",
         "refresh": 2,
         "skipUrlSync": false,
         "type": "interval"
@@ -544,7 +575,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
